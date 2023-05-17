@@ -1,56 +1,78 @@
 import React from "react";
-import "./button.css";
+import { styled } from "styled-components";
 
 interface ButtonProps {
-  /**
-   * Is this the principal call to action on the page?
-   */
+  children?: React.ReactNode;
   primary?: boolean;
-  /**
-   * What background color to use
-   */
   backgroundColor?: string;
-  /**
-   * How large should the button be?
-   */
   size?: "small" | "medium" | "large";
-  /**
-   * Button contents
-   */
   label: string;
-  /**
-   * Optional click handler
-   */
-  onClick?: () => void;
+  type?: string;
+  onClick?: (e: any) => void;
 }
 
-/**
- * Primary UI component for user interaction
- */
+interface IStyledButton {
+  primary?: boolean;
+  backgroundColor?: string;
+  size?: "small" | "medium" | "large";
+}
+
+const StyledButton = styled.button<IStyledButton>`
+  padding: 10px 20px;
+  background-color: transparent;
+  outline: none;
+  border: 1px solid palevioletred;
+  color: palevioletred;
+  border-radius: 3px;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.9);
+    filter: brightness(85%);
+  }
+
+  ${(p) =>
+    p.primary &&
+    `
+      background-color: palevioletred;
+      border-color: palevioletred;
+      color: white;
+    `}
+  ${(p) => {
+    switch (p.size) {
+      case "small":
+        return `
+          font-size: 12px;
+          `;
+      case "medium":
+        return ` 
+          font-size: 14px;
+          `;
+      case "large":
+        return `
+          font-size: 16px;
+          `;
+      default:
+        return `
+          font-size: 14px;
+          `;
+    }
+  }}
+`;
+
 export const Button = ({
+  children,
   primary = false,
   size = "medium",
   backgroundColor,
   label,
+  type = "button",
+  onClick = () => {},
   ...props
 }: ButtonProps) => {
-  const mode = primary
-    ? "storybook-button--primary"
-    : "storybook-button--secondary";
   return (
-    <button
-      type='button'
-      className={["storybook-button", `storybook-button--${size}`, mode].join(
-        " "
-      )}
-      {...props}
-    >
-      {label}
-      <style jsx>{`
-        button {
-          background-color: ${backgroundColor};
-        }
-      `}</style>
-    </button>
+    <StyledButton onClick={onClick} size={size} primary={primary} {...props}>
+      {label.toUpperCase()}
+    </StyledButton>
   );
 };
